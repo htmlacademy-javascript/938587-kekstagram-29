@@ -1,43 +1,27 @@
+const COMMENTS_COUNTER = 5;
+
 const bigPicture = document.querySelector('.big-picture');
 const bigPictureImage = bigPicture.querySelector('.big-picture__img').querySelector('img');
-const likesCount = bigPicture.querySelector('.likes-count');
-const commentsCount = bigPicture.querySelector('.comments-count');
 const commentsList = bigPicture.querySelector('.social__comments');
 const socialComment = bigPicture.querySelector('.social__comment');
-const socialCaption = bigPicture.querySelector('.social__caption');
 const closeButton = document.querySelector('.big-picture__cancel');
+const moreButton = document.querySelector('.social__comments-loader');
+const commentsCount = document.querySelector('.social__comment-count');
 
-const hideElements = () => {
-  document.querySelector('.social__comment-count').classList.add('hidden');
-  document.querySelector('.comments-loader').classList.add('hidden');
+let comments;
+let shownComments = 0;
+
+const fillCommentsCounter = () => {
+  commentsCount.innerHTML = `${shownComments} из <span class="comment-count">${comments.length}</span> комментариев`;
 };
 
-const onDocumentKeydown = (evt) => {
-  if (evt.key === 'Escape' && !evt.target.closest('.social__footer-text')) {
-    evt.preventDefault();
-    closeModal();
+const setButtonState = () => {
+  if (shownComments >= comments.length) {
+    moreButton.classList.add('hidden');
+    return;
   }
+  moreButton.classList.remove('hidden');
 };
-
-const onCloseButtonClick = () => {
-  closeModal();
-};
-
-const showModal = () => {
-  bigPicture.classList.remove('hidden');
-  document.body.classList.add('modal-open');
-  document.addEventListener('keydown', onDocumentKeydown);
-  closeButton.addEventListener('click', onCloseButtonClick);
-};
-
-// Использую объявление функции через function для всплытия - для функции onModalEscapeKeydown
-function closeModal () {
-  bigPicture.classList.add('hidden');
-  document.body.classList.remove('modal-open');
-  document.removeEventListener('keydown', onDocumentKeydown);
-  closeButton.removeEventListener('click', onCloseButtonClick);
-}
-
 const createComment = (item) => {
   const comment = socialComment.cloneNode(true);
   const avatar = comment.querySelector('.social__picture');
@@ -47,22 +31,65 @@ const createComment = (item) => {
   return comment;
 };
 
-const createCommentsList = ({ comments }) => {
-  comments.forEach((comment) => commentsList.append(createComment(comment)));
+// Использую объявление функции через function для всплытия - для обработчика onShowMoreButtonClick
+const renderCommentsList = () => {
+  const fragment = document.createDocumentFragment();
+  const currentComments = comments.slice(shownComments, shownComments + COMMENTS_COUNTER);
+  shownComments = Math.min(shownComments + COMMENTS_COUNTER, comments.length);
+
+  currentComments.forEach((comment) => fragment.append(createComment(comment)));
+  commentsList.append(fragment);
+  setButtonState();
+  fillCommentsCounter();
 };
+
+const onShowMoreButtonClick = (event) => {
+  event.preventDefault();
+  renderCommentsList();
+};
+
+const showModal = () => {
+  bigPicture.classList.remove('hidden');
+  document.body.classList.add('modal-open');
+  document.addEventListener('keydown', onDocumentKeydown);
+  closeButton.addEventListener('click', onCloseButtonClick);
+  moreButton.addEventListener('click', onShowMoreButtonClick);
+};
+
+const closeModal = () => {
+  bigPicture.classList.add('hidden');
+  document.body.classList.remove('modal-open');
+  document.removeEventListener('keydown', onDocumentKeydown);
+  closeButton.removeEventListener('click', onCloseButtonClick);
+  moreButton.removeEventListener('click', onShowMoreButtonClick);
+  shownComments = 0;
+};
+
+// Использую объявление функции через function для всплытия
+function onDocumentKeydown(evt) {
+  if (evt.key === 'Escape' && !evt.target.closest('.social__footer-text')) {
+    evt.preventDefault();
+    closeModal();
+  }
+}
+
+// Использую объявление функции через function для всплытия
+function onCloseButtonClick() {
+  closeModal();
+}
 
 const fillBigPicture = (data) => {
   bigPictureImage.src = data.url;
   bigPictureImage.alt = data.description;
-  likesCount.textContent = data.likes;
-  commentsCount.textContent = data.comments.length;
-  socialCaption.textContent = data.description;
-  createCommentsList(data);
+  bigPicture.querySelector('.likes-count').textContent = data.likes;
+  bigPicture.querySelector('.social__caption').textContent = data.description;
+  renderCommentsList();
 };
 
 const displayBigPicture = (data) => {
   commentsList.innerHTML = '';
-  hideElements();
+  comments = data.comments;
+  // hideElements();
   fillBigPicture(data);
   showModal();
 };
