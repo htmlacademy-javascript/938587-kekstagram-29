@@ -31,7 +31,6 @@ const createComment = (item) => {
   return comment;
 };
 
-// Использую объявление функции через function для всплытия - для обработчика onShowMoreButtonClick
 const renderCommentsList = () => {
   const fragment = document.createDocumentFragment();
   const currentComments = comments.slice(shownComments, shownComments + COMMENTS_COUNTER);
@@ -66,9 +65,9 @@ const closeModal = () => {
 };
 
 // Использую объявление функции через function для всплытия
-function onDocumentKeydown(evt) {
-  if (evt.key === 'Escape' && !evt.target.closest('.social__footer-text')) {
-    evt.preventDefault();
+function onDocumentKeydown(event) {
+  if (event.key === 'Escape' && !event.target.closest('.social__footer-text')) {
+    event.preventDefault();
     closeModal();
   }
 }
