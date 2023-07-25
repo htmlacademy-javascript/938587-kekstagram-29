@@ -1,7 +1,5 @@
 import { displayBigPicture } from './display-big-picture.js';
-import { createPhotoDescriptions } from './create-photo-descriptions.js';
 
-const descriptionsList = createPhotoDescriptions();
 const thumbnailsListFragment = document.createDocumentFragment();
 const picturesList = document.querySelector('.pictures');
 const photoThumbnailTemplate = document.querySelector('#picture')
@@ -25,9 +23,10 @@ const createThumbnail = (description) => {
   return photoThumbnail;
 };
 
-const displayThumbnails = () => {
-  descriptionsList.forEach((item) => thumbnailsListFragment.append(createThumbnail(item)));
+const displayThumbnails = (data) => {
+  data.forEach((item) => thumbnailsListFragment.append(createThumbnail(item)));
   picturesList.append(thumbnailsListFragment);
+
 };
 
 export { displayThumbnails };

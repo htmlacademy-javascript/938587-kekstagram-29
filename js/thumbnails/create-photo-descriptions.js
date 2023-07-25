@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomArrayElement} from '../utils/util.js';
+import { getRandomInteger, getRandomArrayElement } from '../utils/util.js';
 
 const PHOTO_DESCRIPTIONS_COUNT = 25;
 
@@ -29,25 +29,25 @@ const MESSAGES = [
 ];
 
 const NAMES = [
-  'Анна Полянская',
-  'Саша Сахарова',
-  'Александр Демидов',
-  'Ксения Игоревна',
-  'София Горбатова',
-  'Марина Сергеевна',
-  'Алиса Соболева',
-  'Андрей Меньшенин',
-  'Ася Харитонова',
-  'Алина Горбатова',
+  'Виктория Харитонова',
+  'Вера Казакова',
+  'Лев Дьяков',
+  'Есения Игнатьева',
+  'София Григорьева',
+  'Полина Михайлова',
+  'Елизавета Миронова',
+  'Леонид Зайцев',
+  'Арина Петрова',
+  'Елизавета Полякова',
 ];
 
 const DESCRIPTIONS = [
-  'Никогда не обижай своих близких.',
-  'Хорошие люди существуют!',
-  'Не разлей вода.',
-  'С косметикой надо быть аккуратней.',
-  'Нет предела совершенству',
-  'Это здорово.'
+  'Stop looking for happiness in the same place you just lost it.',
+  'Good things come to those who book flights.',
+  'We go together like peanut butter and jelly.',
+  'A lot goes down when we dress up.',
+  'Friends become our chosen family!',
+  'Tis the season to be freezin’'
 ];
 
 const createSingleComment = () => {
@@ -72,4 +72,4 @@ const createDescription = () => ({
 
 const createPhotoDescriptions = () => Array.from({length: PHOTO_DESCRIPTIONS_COUNT}, createDescription);
 
-export {createPhotoDescriptions};
+export { createPhotoDescriptions };
