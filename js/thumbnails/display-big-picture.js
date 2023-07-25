@@ -88,7 +88,6 @@ const fillBigPicture = (data) => {
 const displayBigPicture = (data) => {
   commentsList.innerHTML = '';
   comments = data.comments;
-  // hideElements();
   fillBigPicture(data);
   showModal();
 };

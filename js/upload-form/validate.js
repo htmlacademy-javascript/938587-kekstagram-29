@@ -39,8 +39,8 @@ const checkHashtagRepeat = (value) => {
 
 const checkDescriptionLength = (value) => value.length <= MAX_COMMENT_LENGTH;
 
-const pristineValidate = () => pristine.validate();
-const pristineReset = () => pristine.reset();
+const validatePristine = () => pristine.validate();
+const resetPristine = () => pristine.reset();
 
 const initValidator = () => {
   pristine.addValidator(textDescription, checkDescriptionLength, INVALID_COMMENT_LENGTH_TEXT, 1, true);
@@ -49,4 +49,4 @@ const initValidator = () => {
   pristine.addValidator(textHashtags, checkHashtagRepeat, HASHTAG_REPEAT_TEXT, 1, true);
 };
 
-export { initValidator, pristineValidate, pristineReset };
+export { initValidator, validatePristine, resetPristine };
