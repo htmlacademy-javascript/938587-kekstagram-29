@@ -1,109 +1,56 @@
-const EFFECTS = {
-  chrome:  {
-    style: 'grayscale',
-    min: 0,
-    max: 1,
-    step: 0.1,
-    units: '',
-  },
-  sepia:  {
-    style: 'sepia',
-    min: 0,
-    max: 1,
-    step: 0.1,
-    units: '',
-  },
-  marvin:  {
-    style: 'invert',
-    min: 0,
-    max: 100,
-    step: 1,
-    units: '%',
-  },
-  phobos:  {
-    style: 'blur',
-    min: 0,
-    max: 3,
-    step: 0.1,
-    units: 'px',
-  },
-  heat:  {
-    style: 'brightness',
-    min: 1,
-    max: 3,
-    step: 0.1,
-    units: '',
-  },
-  default: {
-    style: 'none',
-    min: 1,
-    max: 1,
-    step: 1,
-    units: '',
-  },
-};
+import { displayThumbnails } from './display-thumbnails.js';
+import { debounce } from '../utils/util.js';
 
-const effectLevelValue = document.querySelector('.effect-level__value');
-const effectLevelSlider = document.querySelector('.effect-level__slider');
-const imageUploadPreview = document.querySelector('.img-upload__preview');
-const imageUploadEffectLevel = document.querySelector('.img-upload__effect-level');
+const RANDOM_PICTURES_COUNT = 10;
+const DELAY = 500;
+const FILTER_RANDOM = 'filter-random';
+const FILTER_DISCUSSED = 'filter-discussed';
 
-let currentStyle;
-let currentUnit;
+const imageFilters = document.querySelector('.img-filters');
+const imageFiltersForm = document.querySelector('.img-filters__form');
+const picturesList = document.querySelector('.pictures');
 
-const setContainerState = (value) => {
-  if (value === 'none') {
-    imageUploadEffectLevel.classList.add('hidden');
-    imageUploadPreview.style.filter = 'none';
-    return;
-  }
-  imageUploadEffectLevel.classList.remove('hidden');
-};
+const sortByCommentsLength = (data) => data.slice().sort((a, b) => b.comments.length - a.comments.length);
 
-const initEffects = (value) => {
-  const {min, max, step, style, units} = EFFECTS[value] || EFFECTS.default;
-  currentStyle = style;
-  currentUnit = units;
+const sortRandom = (data) => {
+  const dataClone = data.slice();
 
-  setContainerState(value);
-
-  noUiSlider.create(effectLevelSlider, {
-    range: {
-      min,
-      max,
-    },
-    step,
-    start: max,
-    connect: 'lower',
-  });
-
-  effectLevelSlider.noUiSlider.on('update', () => {
-    const saturation = effectLevelSlider.noUiSlider.get();
-    imageUploadPreview.style.filter = `${currentStyle}(${saturation}${currentUnit})`;
-    effectLevelValue.value = saturation;
-  });
-};
-
-const updateEffects = (value) => {
-  setContainerState(value);
-
-  if (value === 'none') {
-    return;
+  for (let i = dataClone.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [dataClone[i], dataClone[j]] = [dataClone[j], dataClone[i]];
   }
 
-  const {min, max, step, style, units} = EFFECTS[value] || EFFECTS.default;
+  return dataClone.slice(0, RANDOM_PICTURES_COUNT);
+};
 
-  currentStyle = style;
-  currentUnit = units;
+const getFilteredData = (id, data) => {
+  switch (id) {
+    case FILTER_RANDOM:
+      return sortRandom(data);
+    case FILTER_DISCUSSED:
+      return sortByCommentsLength(data);
+    default:
+      return data;
+  }
+};
 
-  effectLevelSlider.noUiSlider.updateOptions({
-    range: {
-      min: min,
-      max: max,
-    },
-    step: step,
-    start: max,
+const renderFilteredPictures = (id, data) => {
+  picturesList.querySelectorAll('.picture').forEach((picture) => picture.remove());
+  displayThumbnails(getFilteredData(id, data));
+};
+
+const renderPictures = debounce((id, data) => renderFilteredPictures(id, data), DELAY);
+
+const initFilters = (data) => {
+  imageFilters.classList.remove('img-filters--inactive');
+
+  imageFiltersForm.addEventListener('click', (event) => {
+    if (event.target.closest('.img-filters__button') && !event.target.closest('.img-filters__button--active')) {
+      document.querySelector('.img-filters__button--active').classList.remove('img-filters__button--active');
+      event.target.classList.add('img-filters__button--active');
+      renderPictures(event.target.id, data);
+    }
   });
 };
 
-export { initEffects, updateEffects };
+export { initFilters, getFilteredData };

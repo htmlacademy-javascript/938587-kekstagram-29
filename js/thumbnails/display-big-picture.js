@@ -1,3 +1,5 @@
+import { isEscape } from '../utils/util.js';
+
 const COMMENTS_COUNTER = 5;
 
 const bigPicture = document.querySelector('.big-picture');
@@ -22,6 +24,7 @@ const setButtonState = () => {
   }
   moreButton.classList.remove('hidden');
 };
+
 const createComment = (item) => {
   const comment = socialComment.cloneNode(true);
   const avatar = comment.querySelector('.social__picture');
@@ -66,7 +69,7 @@ const closeModal = () => {
 
 // Использую объявление функции через function для всплытия
 function onDocumentKeydown(event) {
-  if (event.key === 'Escape' && !event.target.closest('.social__footer-text')) {
+  if (isEscape(event) && !event.target.closest('.social__footer-text')) {
     event.preventDefault();
     closeModal();
   }
