@@ -1,3 +1,5 @@
+import { isEscape } from '../utils/util.js';
+
 let message;
 let isOpen = false;
 
@@ -17,17 +19,16 @@ const createMessage = (text, state, buttonText) => (
 );
 
 const onDocumentKeydown = (event) => {
-  if (event.key === 'Escape') {
+  if (isEscape(event)) {
     event.stopPropagation();
     event.preventDefault();
     closeMessage();
   }
 };
 
-const onCloseButtonClick = () => {
-  closeMessage();
-};
+const onCloseButtonClick = () => closeMessage();
 
+// Использую объявление функции через function для всплытия
 function closeMessage () {
   message.remove();
   document.removeEventListener('keydown', onDocumentKeydown);

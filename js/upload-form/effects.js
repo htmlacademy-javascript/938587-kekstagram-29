@@ -45,7 +45,7 @@ const EFFECTS = {
 
 const effectLevelValue = document.querySelector('.effect-level__value');
 const effectLevelSlider = document.querySelector('.effect-level__slider');
-const imageUploadPreview = document.querySelector('.img-upload__preview');
+const imageUploadPreview = document.querySelector('.img-upload__preview img');
 const imageUploadEffectLevel = document.querySelector('.img-upload__effect-level');
 
 let currentStyle;
