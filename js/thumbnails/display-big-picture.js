@@ -45,7 +45,7 @@ const renderCommentsList = () => {
   fillCommentsCounter();
 };
 
-const onShowMoreButtonClick = (event) => {
+const onShowMoreCommentsButtonClick = (event) => {
   event.preventDefault();
   renderCommentsList();
 };
@@ -55,7 +55,7 @@ const showModal = () => {
   document.body.classList.add('modal-open');
   document.addEventListener('keydown', onDocumentKeydown);
   closeButton.addEventListener('click', onCloseButtonClick);
-  moreButton.addEventListener('click', onShowMoreButtonClick);
+  moreButton.addEventListener('click', onShowMoreCommentsButtonClick);
 };
 
 const closeModal = () => {
@@ -63,7 +63,7 @@ const closeModal = () => {
   document.body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
   closeButton.removeEventListener('click', onCloseButtonClick);
-  moreButton.removeEventListener('click', onShowMoreButtonClick);
+  moreButton.removeEventListener('click', onShowMoreCommentsButtonClick);
   shownComments = 0;
 };
 
